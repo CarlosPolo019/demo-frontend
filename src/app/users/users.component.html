@@ -1,197 +1,154 @@
-    <!-- src/app/users/users.component.html -->
-    <div class="container mt-5">
+<!-- src/app/users/users.component.html -->
+<div class="container mt-5">
     <h2 class="text-center mb-4">Lista de Usuarios</h2>
-
+  
     <!-- Botón para Crear Usuario -->
-    <button class="btn btn-primary mb-4" (click)="openModal()">
-        Crear Usuario
+    <button class="btn btn-primary mb-4 d-block w-100" (click)="openModal()">
+      Crear Usuario
     </button>
-
+  
     <!-- Formulario de Búsqueda -->
     <div class="row justify-content-center mb-4">
-        <div class="col-lg-6 col-md-8">
+      <div class="col-12 col-md-8">
         <div class="input-group shadow-sm">
-            <input
+          <input
             #searchInput
             type="text"
             class="form-control"
             (keyup)="filterUsers(searchInput.value)"
             placeholder="Buscar por nombre o correo"
-            />
-            <div class="input-group-append">
-            <span class="input-group-text bg-primary text-white"
-                ><i class="fas fa-search"></i
-            ></span>
-            </div>
+          />
+          <div class="input-group-append">
+            <span class="input-group-text bg-primary text-white">
+              <i class="fas fa-search"></i>
+            </span>
+          </div>
         </div>
-        </div>
+      </div>
     </div>
-
-    <!-- Tabla de Usuarios -->
-    <div class="table-responsive shadow-sm">
-        <table class="table table-bordered table-hover table-striped align-middle">
-        <thead class="bg-dark text-white">
-            <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Correo</th>
-            <th>Fecha de nacimiento</th>
-            <th>Opciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let user of users">
-            <td>{{ user.firstName }}</td>
-            <td>{{ user.lastName }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.birthDate | date : "yyyy-MM-dd" }}</td>
-            <td>
-                <button
-                class="btn btn-outline-warning btn-sm mx-1"
-                (click)="openModal(user)"
-                >
+  
+    <!-- Mostrar los usuarios en Cards -->
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-4" *ngFor="let user of users">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ user.firstName }} {{ user.lastName }}</h5>
+            <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+            <p class="card-text"><strong>Fecha de Nacimiento:</strong> {{ user.birthDate | date: 'yyyy-MM-dd' }}</p>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-outline-warning btn-sm" (click)="openModal(user)">
                 <i class="fas fa-edit"></i> Editar
-                </button>
-                <button
-                class="btn btn-outline-danger btn-sm mx-1"
-                (click)="deleteUser(user.id)"
-                >
+              </button>
+              <button class="btn btn-outline-danger btn-sm" (click)="deleteUser(user.id)">
                 <i class="fas fa-trash"></i> Eliminar
-                </button>
-            </td>
-            </tr>
-        </tbody>
-        </table>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
+  
     <!-- Paginación -->
     <nav *ngIf="totalPages > 1" class="mt-4">
-        <ul class="pagination justify-content-center">
+      <ul class="pagination justify-content-center">
         <li class="page-item" [class.disabled]="currentPage === 0">
-            <a class="page-link" (click)="loadUsers(currentPage - 1)">Anterior</a>
+          <a class="page-link" (click)="prevPage()">Anterior</a>
         </li>
         <li
-            class="page-item"
-            *ngFor="let page of [].constructor(totalPages); let i = index"
-            [class.active]="i === currentPage"
+          class="page-item"
+          *ngFor="let page of [].constructor(totalPages); let i = index"
+          [class.active]="i === currentPage"
         >
-            <a class="page-link" (click)="loadUsers(i)">{{ i + 1 }}</a>
+          <a class="page-link" (click)="loadUsers(i, searchQuery)">{{ i + 1 }}</a>
         </li>
         <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
-            <a class="page-link" (click)="loadUsers(currentPage + 1)">Siguiente</a>
+          <a class="page-link" (click)="nextPage()">Siguiente</a>
         </li>
-        </ul>
+      </ul>
     </nav>
-
+  
     <!-- Modal para Crear/Editar Usuario -->
     <div
-        class="modal fade"
-        id="userModal"
-        tabindex="-1"
-        aria-labelledby="userModalLabel"
-        aria-hidden="true"
+      class="modal fade"
+      id="userModal"
+      tabindex="-1"
+      aria-labelledby="userModalLabel"
+      aria-hidden="true"
     >
-        <div class="modal-dialog">
+      <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+          <div class="modal-header">
             <h5 class="modal-title" id="userModalLabel">
-                {{ editingUserId ? "Editar Usuario" : "Crear Usuario" }}
+              {{ editingUserId ? 'Editar Usuario' : 'Crear Usuario' }}
             </h5>
             <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
             ></button>
-            </div>
-            <div class="modal-body">
+          </div>
+          <div class="modal-body">
             <form [formGroup]="userForm" (ngSubmit)="submitForm()">
-                <div class="form-group mb-3">
-                <label for="firstName">First Name</label>
+              <div class="form-group mb-3">
+                <label for="firstName">Nombre</label>
                 <input
-                    id="firstName"
-                    formControlName="firstName"
-                    class="form-control"
-                    placeholder="Enter First Name"
+                  id="firstName"
+                  formControlName="firstName"
+                  class="form-control"
+                  placeholder="Enter First Name"
                 />
-                <div
-                    *ngIf="
-                    userForm.get('firstName')?.invalid &&
-                    userForm.get('firstName')?.touched
-                    "
-                    class="text-danger"
-                >
-                    El nombre es requerido y no debe exceder 50 caracteres.
+                <div *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched" class="text-danger">
+                  El nombre es requerido y no debe exceder 50 caracteres.
                 </div>
-                </div>
-
-                <div class="form-group mb-3">
-                <label for="lastName">Last Name</label>
+              </div>
+  
+              <div class="form-group mb-3">
+                <label for="lastName">Apellido</label>
                 <input
-                    id="lastName"
-                    formControlName="lastName"
-                    class="form-control"
-                    placeholder="Enter Last Name"
+                  id="lastName"
+                  formControlName="lastName"
+                  class="form-control"
+                  placeholder="Enter Last Name"
                 />
-                <div
-                    *ngIf="
-                    userForm.get('lastName')?.invalid &&
-                    userForm.get('lastName')?.touched
-                    "
-                    class="text-danger"
-                >
-                    El apellido es requerido y no debe exceder 50 caracteres.
+                <div *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched" class="text-danger">
+                  El apellido es requerido y no debe exceder 50 caracteres.
                 </div>
-                </div>
-
-                <div class="form-group mb-3">
-                <label for="email">Email</label>
+              </div>
+  
+              <div class="form-group mb-3">
+                <label for="email">Correo</label>
                 <input
-                    id="email"
-                    formControlName="email"
-                    class="form-control"
-                    placeholder="Enter Email"
+                  id="email"
+                  formControlName="email"
+                  class="form-control"
+                  placeholder="Enter Email"
                 />
-                <div
-                    *ngIf="
-                    userForm.get('email')?.invalid &&
-                    userForm.get('email')?.touched
-                    "
-                    class="text-danger"
-                >
-                    Introduce un email válido.
+                <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="text-danger">
+                  Introduce un email válido.
                 </div>
-                </div>
-
-                <div class="form-group mb-3">
-                <label for="birthDate">Birth Date</label>
+              </div>
+  
+              <div class="form-group mb-3">
+                <label for="birthDate">Fecha de Nacimiento</label>
                 <input
-                    id="birthDate"
-                    type="date"
-                    formControlName="birthDate"
-                    class="form-control"
+                  id="birthDate"
+                  type="date"
+                  formControlName="birthDate"
+                  class="form-control"
                 />
-                <div
-                    *ngIf="
-                    userForm.get('birthDate')?.invalid &&
-                    userForm.get('birthDate')?.touched
-                    "
-                    class="text-danger"
-                >
-                    La fecha de nacimiento debe ser anterior a la fecha actual.
+                <div *ngIf="userForm.get('birthDate')?.invalid && userForm.get('birthDate')?.touched" class="text-danger">
+                  La fecha de nacimiento debe ser anterior a la fecha actual.
                 </div>
-                </div>
-
-                <button
-                type="submit"
-                class="btn btn-primary"
-                [disabled]="userForm.invalid"
-                >
-                {{ editingUserId ? "Actualizar Usuario" : "Crear Usuario" }}
-                </button>
+              </div>
+  
+              <button type="submit" class="btn btn-primary w-100" [disabled]="userForm.invalid">
+                {{ editingUserId ? 'Actualizar Usuario' : 'Crear Usuario' }}
+              </button>
             </form>
-            </div>
+          </div>
         </div>
-        </div>
+      </div>
     </div>
-    </div>
+  </div>
+  
