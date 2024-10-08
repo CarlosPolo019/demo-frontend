@@ -1,0 +1,28 @@
+/* src/app/users/users.component.css */
+.card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Personalizar el color de las notificaciones de éxito */
+.toast-success {
+    background-color: #28a745 !important; /* Verde */
+    color: #ffffff !important; /* Texto blanco */
+  }
+  
+  .toast-top-right {
+    top: 20px;
+    right: 20px;
+  }
+  

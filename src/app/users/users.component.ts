@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsersService, User, PaginatedResponse } from '../services/users.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-users',
@@ -22,7 +23,8 @@ export class UsersComponent implements OnInit {
 
   constructor(
     private usersService: UsersService,
-    private fb: FormBuilder // Inject FormBuilder for reactive forms
+    private fb: FormBuilder,  // Inject FormBuilder for reactive forms
+    private toastr: ToastrService // Inyectamos ToastrService
   ) {
     // Initialize the reactive form
     this.userForm = this.fb.group({
@@ -37,7 +39,7 @@ export class UsersComponent implements OnInit {
     this.loadUsers();
   }
 
-  // Load users with pagination and optional filter for search
+  // Cargar usuarios con paginación y filtro opcional
   async loadUsers(page: number = 0, firstName: string = ''): Promise<void> {
     try {
       const response: PaginatedResponse = await this.usersService.getUsers(page, this.pageSize, firstName);
@@ -45,60 +47,51 @@ export class UsersComponent implements OnInit {
       this.totalPages = response.totalPages;
       this.currentPage = response.number;
     } catch (error) {
+      this.toastr.error('Error al cargar usuarios', 'Error');
       console.error('Error loading users:', error);
     }
   }
 
   openModal(user?: User) {
     if (user) {
-      this.editingUserId = user.id;  // Load user data into the form
-      // Format birthDate correctly
+      this.editingUserId = user.id;  // Cargar datos del usuario en el formulario
       this.userForm.patchValue({
         ...user,
-        birthDate: this.formatDateForInput(user.birthDate) // Convert date for input
+        birthDate: this.formatDateForInput(user.birthDate) // Convertir la fecha para el input
       });
-      
     } else {
       this.editingUserId = null;  // Resetear ID para crear un nuevo usuario
       this.userForm.reset();  // Limpiar el formulario
     }
     const modalElement = document.getElementById('userModal');
-    const modal = new (window as any).bootstrap.Modal(modalElement!);  // Inicializar modal de Bootstrap
+    const modal = new (window as any).bootstrap.Modal(modalElement!);  // Inicializar el modal de Bootstrap
     modal.show();  // Mostrar el modal
   }
 
   formatDateForInput(dateString: string): string {
     const date = new Date(dateString);
-    return date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    return date.toISOString().split('T')[0]; // Formato como YYYY-MM-DD
   }
 
-
-
-
-
-  // Filter users by name or email
+  // Filtro de usuarios por nombre o correo
   filterUsers(query: string): void {
-    this.searchQuery = query; // Update search query
-    this.loadUsers(0, query); // Reload users with filter
+    this.searchQuery = query; // Actualizar el string de búsqueda
+    this.loadUsers(0, query); // Recargar los usuarios con el filtro
   }
 
-  // Edit user by patching the form with user data
-  editUser(user: User): void {
-    this.editingUserId = user.id;
-    this.userForm.patchValue(user);
-  }
-
-  // Delete user and reload the list
+  // Eliminar usuario y recargar la lista
   async deleteUser(id: number): Promise<void> {
     try {
       await this.usersService.deleteUser(id);
-      this.loadUsers(); // Reload after deletion
+      this.toastr.success('Usuario eliminado con éxito', 'Operación exitosa');
+      this.loadUsers(); // Recargar usuarios después de eliminar
     } catch (error) {
+      this.toastr.error('Error al eliminar el usuario', 'Operación fallida');
       console.error('Error deleting user:', error);
     }
   }
 
-  // Submit form for creating or updating a user
+  // Enviar formulario para crear o actualizar un usuario
   async submitForm(): Promise<void> {
     if (this.userForm.invalid) return;
 
@@ -106,29 +99,32 @@ export class UsersComponent implements OnInit {
     try {
       if (this.editingUserId) {
         await this.usersService.updateUser(this.editingUserId, user);
+        this.toastr.success('Usuario actualizado con éxito', 'Operación exitosa');
       } else {
         await this.usersService.createUser(user);
+        this.toastr.success('Usuario creado con éxito', 'Operación exitosa');
       }
 
-      // Reset the form and reload users
+      // Resetear el formulario y recargar usuarios
       this.userForm.reset();
       this.editingUserId = null;
       this.loadUsers();
     } catch (error) {
+      this.toastr.error('Error al guardar el usuario', 'Operación fallida');
       console.error('Error saving user:', error);
     }
   }
 
-  // Validator for checking that birth date is in the past
+  // Validator para verificar que la fecha de nacimiento sea en el pasado
   dateInPastValidator(control: any) {
     const birthDate = new Date(control.value);
     return birthDate < new Date() ? null : { invalidDate: true };
   }
 
-  // Pagination control
+  // Control de paginación
   nextPage(): void {
     if (this.currentPage < this.totalPages - 1) {
-      this.loadUsers(this.currentPage + 1,this.searchQuery);
+      this.loadUsers(this.currentPage + 1, this.searchQuery);
     }
   }
 

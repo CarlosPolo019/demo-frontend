@@ -27,10 +27,10 @@
       </div>
     </div>
   
-    <!-- Mostrar los usuarios en Cards -->
+    <!-- Mostrar los usuarios en Cards con animaciones -->
     <div class="row">
       <div class="col-12 col-md-6 col-lg-4" *ngFor="let user of users">
-        <div class="card mb-4 shadow-sm">
+        <div class="card mb-4 shadow-sm card-animate">
           <div class="card-body">
             <h5 class="card-title">{{ user.firstName }} {{ user.lastName }}</h5>
             <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
@@ -96,7 +96,7 @@
                   id="firstName"
                   formControlName="firstName"
                   class="form-control"
-                  placeholder="Enter First Name"
+                  placeholder="Ingresa el nombre"
                 />
                 <div *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched" class="text-danger">
                   El nombre es requerido y no debe exceder 50 caracteres.
@@ -109,7 +109,7 @@
                   id="lastName"
                   formControlName="lastName"
                   class="form-control"
-                  placeholder="Enter Last Name"
+                  placeholder="Ingresa el apellido"
                 />
                 <div *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched" class="text-danger">
                   El apellido es requerido y no debe exceder 50 caracteres.
@@ -122,7 +122,7 @@
                   id="email"
                   formControlName="email"
                   class="form-control"
-                  placeholder="Enter Email"
+                  placeholder="Ingresa el correo"
                 />
                 <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched" class="text-danger">
                   Introduce un email válido.
