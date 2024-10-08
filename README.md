@@ -47,6 +47,17 @@ Este es un proyecto de frontend desarrollado con Angular para gestionar usuarios
    - Eliminar usuarios.
    - Filtrar usuarios por nombre o correo electrónico.
 
+## Capturas de pantalla
+
+### Página de inicio
+![Página de inicio](./screenshots/home.png)
+
+### Lista de usuarios
+![Lista de usuarios](./screenshots/home.png)
+
+### Formulario para editar o crear usuario
+![Editar usuario](./screenshots/edit-user.png)
+
 ## Estructura del Proyecto
 
 ```plaintext
