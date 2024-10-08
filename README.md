@@ -1,27 +1,81 @@
-# DemoFrontend
+# Demo Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.7.
+Este es un proyecto de frontend desarrollado con Angular para gestionar usuarios. Este proyecto se conecta a un backend para realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre los usuarios.
 
-## Development server
+## Tabla de Contenidos
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Uso](#uso)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Contribuciones](#contribuciones)
+- [Licencia](#licencia)
 
-## Code scaffolding
+## Requisitos
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- Node.js (v14 o superior)
+- Angular CLI
+- Bootstrap (para estilos)
 
-## Build
+## Instalación
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+1. Clona este repositorio en tu máquina local:
+   ```bash
+   git clone https://github.com/CarlosPolo019/demo-frontend.git
+   cd demo-frontend
+   ```
 
-## Running unit tests
+2. Instala las dependencias del proyecto:
+   ```bash
+   npm install
+   ```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+3. Asegúrate de que el backend esté corriendo en `http://localhost:8080/api/users`.
 
-## Running end-to-end tests
+## Uso
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+1. Inicia el servidor de desarrollo:
+   ```bash
+   ng serve
+   ```
 
-## Further help
+2. Abre tu navegador y navega a `http://localhost:4200`.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+3. Desde la interfaz, podrás:
+   - Crear nuevos usuarios.
+   - Editar usuarios existentes.
+   - Eliminar usuarios.
+   - Filtrar usuarios por nombre o correo electrónico.
+
+## Estructura del Proyecto
+
+```plaintext
+src/
+├── app/
+│   ├── services/
+│   │   └── users.service.ts        # Servicio para manejar la comunicación con la API
+│   ├── users/
+│   │   ├── users.component.ts       # Componente principal para gestionar usuarios
+│   │   ├── users.component.html      # Plantilla HTML del componente
+│   │   └── users.component.css       # Estilos del componente
+│   ├── app.component.ts              # Componente raíz de la aplicación
+│   ├── app.config.ts                 # Configuración de la aplicación
+│   ├── app.routes.ts                 # Rutas de la aplicación
+│   └── main.ts                       # Archivo principal de entrada
+├── assets/                            # Archivos estáticos
+└── styles.css                         # Estilos globales
+```
+
+## Contribuciones
+
+Las contribuciones son bienvenidas. Si deseas contribuir, por favor sigue estos pasos:
+
+1. Realiza un fork del repositorio.
+2. Crea una nueva rama (`git checkout -b feature/mi-nueva-caracteristica`).
+3. Realiza tus cambios y confirma (`git commit -m 'Agregué una nueva característica'`).
+4. Envía tus cambios (`git push origin feature/mi-nueva-caracteristica`).
+5. Abre un Pull Request.
+
+## Licencia
+
+Este proyecto está bajo la Licencia MIT - consulta el archivo [LICENSE](LICENSE) para más detalles.
